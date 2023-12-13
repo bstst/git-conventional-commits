@@ -84,3 +84,31 @@ test('parseCommit - breaking changes - body', async () => {
         breakingChanges: ["Ditch support of windows XP"],
     })
 });
+
+test('parseCommit - breaking changes - body / FEAT', async () => {
+
+    // GIVEN
+    const conventionConfig = Config.defaultConfig().convention;
+    const commitConvention = new CommitConvention(conventionConfig);
+    const commit = {
+        hash: "1c9d750",
+        subject: "Feat/foo/bar",
+        body: 'BREAKING CHANGE: Ditch support of windows XP'
+    };
+
+
+    // WHEN
+    let conventionalCommit = await commitConvention.parseCommit(commit);
+
+
+    // THEN
+    expect(conventionalCommit).toEqual({
+        hash: commit.hash,
+        subject: commit.subject,
+        body: commit.body,
+        type: 'feat',
+        scope: undefined,
+        description: 'foo/bar',
+        breakingChanges: ["Ditch support of windows XP"],
+    })
+});
